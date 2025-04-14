@@ -35,8 +35,9 @@ function create_floating_window(opts)
   -- Set default options if not provided
   opts = opts or {}
 
-  local width = opts.width or math.floor(vim.o.columns * 0.8)
-  local height = opts.height or math.floor(vim.o.lines * 0.8)
+  local width = opts.width or vim.o.columns
+  local height = opts.height or vim.o.lines
+
   local row = opts.row or math.floor((vim.o.lines - height) / 2)
   local col = opts.col or math.floor((vim.o.columns - width) / 2)
 
@@ -54,8 +55,11 @@ function create_floating_window(opts)
     row = row,
     col = col,
     style = "minimal",
-    border = "rounded",
+    border = { " ", " ", " ", " ", " ", " ", " ", " " },
   })
+
+  -- enable markdown styling
+  vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
 
   -- Return the buffer and window handles
   return { buf = buf, win = win }
@@ -87,6 +91,27 @@ M.start_presentation = function(opts)
   vim.keymap.set("n", "q", function()
     vim.api.nvim_win_close(float.win, true)
   end, { buffer = float.buf })
+
+  local restore = {
+    cmdheight = {
+      original = vim.o.cmdheight,
+      present = 0,
+    },
+  }
+
+  -- set the options we want during presentation
+  for option, config in pairs(restore) do
+    vim.o[option] = config.present
+  end
+
+  vim.api.nvim_create_autocmd("BufLeave", {
+    buffer = float.buf,
+    callback = function(_ev)
+      for option, config in pairs(restore) do
+        vim.o[option] = config.original
+      end
+    end,
+  })
 end
 
 -- vim.print(parse_slides({
@@ -98,7 +123,7 @@ end
 -- }))
 
 M.start_presentation({
-  bufnr = 147,
+  bufnr = 5,
 })
 
 return M
