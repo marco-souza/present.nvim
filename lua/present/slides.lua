@@ -168,8 +168,8 @@ end
 --   "This is the second slide",
 -- }))
 
-M.start_presentation({
-  bufnr = 5,
-})
+-- M.start_presentation({
+--   bufnr = 5,
+-- })
 
 return M
