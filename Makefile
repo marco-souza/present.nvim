@@ -7,6 +7,9 @@ decrypt:
 encrypt:
 	echo "===> Encrypting" && gpg -c .env
 
+tests:
+	echo "===> Running tests"
+
 fmt:
 	echo "===> Formatting"
 	stylua lua/ --config-path=.stylua.toml
