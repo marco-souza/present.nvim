@@ -61,41 +61,57 @@ end
 M.start_presentation = function(opts)
   opts = opts or {}
   opts.bufnr = opts.bufnr or 0
+  opts.padding = opts.padding or 10
 
   local lines = vim.api.nvim_buf_get_lines(opts.bufnr, 0, -1, false)
   local parsed = parse_slides(lines)
   local cur_slide = 1
 
+  local ui_padding = opts.padding
   local windows = {
-    header = {
+    bg = {
       relative = "editor",
       style = "minimal",
       width = vim.o.columns,
-      height = 1,
-      border = "rounded",
+      height = vim.o.lines,
+      -- border = { " ", " ", " ", " ", " ", " ", " ", " " },
       col = 0,
       row = 0,
+      zindex = 1,
+    },
+    header = {
+      relative = "editor",
+      style = "minimal",
+      width = vim.o.columns - 2 * ui_padding,
+      height = 1,
+      border = "rounded",
+      col = ui_padding,
+      row = 0,
+      zindex = 2,
     },
     body = {
       relative = "editor",
       style = "minimal",
-      width = vim.o.columns,
+      width = vim.o.columns - 2 * ui_padding,
       height = vim.o.lines - 5,
       border = { " ", " ", " ", " ", " ", " ", " ", " " },
-      col = 1,
+      col = ui_padding,
       row = 4,
     },
     -- footer = {}
   }
 
+  local bg_float = create_floating_window(windows.bg)
   local header_float = create_floating_window(windows.header)
   local body_float = create_floating_window(windows.body)
 
   local function set_slide_content(idx)
     local slide = parsed.deck[idx]
 
-    local padding =
-      string.rep(" ", math.floor((vim.o.columns - #slide.title) / 2))
+    local padding = string.rep(
+      " ",
+      math.floor((vim.o.columns - #slide.title - 2 * ui_padding) / 2)
+    )
     local title = padding .. slide.title
 
     vim.api.nvim_buf_set_lines(header_float.buf, 0, -1, false, { title })
@@ -105,12 +121,12 @@ M.start_presentation = function(opts)
   set_slide_content(cur_slide)
 
   -- navigation
-  vim.keymap.set("n", "n", function()
+  vim.keymap.set("n", "l", function()
     cur_slide = math.min(cur_slide + 1, #parsed.deck)
     set_slide_content(cur_slide)
   end, { buffer = body_float.buf })
 
-  vim.keymap.set("n", "p", function()
+  vim.keymap.set("n", "h", function()
     cur_slide = math.max(cur_slide - 1, 1)
     set_slide_content(cur_slide)
   end, { buffer = body_float.buf })
@@ -137,7 +153,9 @@ M.start_presentation = function(opts)
       for option, config in pairs(restore) do
         vim.o[option] = config.original
       end
+
       vim.api.nvim_win_close(header_float.win, true)
+      vim.api.nvim_win_close(bg_float.win, true)
     end,
   })
 end
