@@ -1,6 +1,6 @@
 {
   "name": "marco-souza/present.nvim",
-  "description": "A plugin to present slides in Neovim",
+  "description": "A plugin to present Markdown files as slides in Neovim",
   "version": "1.1.0"
 }
 
