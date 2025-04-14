@@ -16,5 +16,3 @@ jobs:
         with:
           version-file: plugin.json
           token: ${{ secrets.GITHUB_TOKEN }}
-
-
