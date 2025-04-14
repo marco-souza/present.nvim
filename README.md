@@ -36,6 +36,9 @@
 
 # 📓 Markdown Slide Presenter for Neovim (`present.nvim`).
 
+![image](https://github.com/user-attachments/assets/7b63763c-144e-4db6-87a5-834b8f8fb1cf)
+
+
 ## Features
 
 - **Markdown to Slides**: Convert your Markdown files into slide presentations effortlessly.
