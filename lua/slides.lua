@@ -51,6 +51,9 @@ local function create_floating_window(opts)
   -- Create a new floating window
   local win = vim.api.nvim_open_win(buf, true, opts)
 
+  -- set wrap to window
+  vim.api.nvim_win_set_option(win, "wrap", true)
+
   -- enable markdown styling
   vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
 
