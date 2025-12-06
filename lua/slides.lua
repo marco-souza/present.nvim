@@ -53,6 +53,7 @@ local function create_floating_window(opts)
 
   -- set wrap to window
   vim.api.nvim_win_set_option(win, "wrap", true)
+  vim.api.nvim_win_set_option(win, "linebreak", true)
 
   -- enable markdown styling
   vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
